@@ -12,6 +12,6 @@ public class TrafficLight {
     }
 
     public enum Color {
-        GREEN, RED
+        GREEN, RED, YELLOW
     }
 }
