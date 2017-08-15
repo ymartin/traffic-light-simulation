@@ -29,10 +29,6 @@ public class FakeScheduledExecutorService implements ScheduledExecutorService {
 
     @Override
     public <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
-        try {
-//            callable.call();
-        } catch (Exception ignored) {
-        }
         return null;
     }
 
