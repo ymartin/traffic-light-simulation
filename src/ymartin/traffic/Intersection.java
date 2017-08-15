@@ -2,31 +2,31 @@ package ymartin.traffic;
 
 public class Intersection {
 
-    private final TrafficLight north;
-    private final TrafficLight south;
-    private final TrafficLight east;
-    private final TrafficLight west;
+    private final TrafficLight northLight;
+    private final TrafficLight southLight;
+    private final TrafficLight eastLight;
+    private final TrafficLight westLight;
 
-    public Intersection(TrafficLight north, TrafficLight south, TrafficLight east, TrafficLight west) {
-        this.north = north;
-        this.south = south;
-        this.east = east;
-        this.west = west;
+    public Intersection(TrafficLight northLight, TrafficLight southLight, TrafficLight eastLight, TrafficLight westLight) {
+        this.northLight = northLight;
+        this.southLight = southLight;
+        this.eastLight = eastLight;
+        this.westLight = westLight;
     }
 
-    public TrafficLight getNorth() {
-        return north;
+    public TrafficLight getNorthLight() {
+        return northLight;
     }
 
-    public TrafficLight getSouth() {
-        return south;
+    public TrafficLight getSouthLight() {
+        return southLight;
     }
 
-    public TrafficLight getEast() {
-        return east;
+    public TrafficLight getEastLight() {
+        return eastLight;
     }
 
-    public TrafficLight getWest() {
-        return west;
+    public TrafficLight getWestLight() {
+        return westLight;
     }
 }
