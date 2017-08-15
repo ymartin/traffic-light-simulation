@@ -1,0 +1,22 @@
+group 'TrafficLightSimulation'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+mainClassName = 'ymartin.traffic.Main'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+test {
+    testLogging {
+        events 'started', 'passed', 'skipped', 'failed'
+    }
+}
