@@ -26,7 +26,7 @@ public class TrafficControllerTest {
         fakeExecutorService = new FakeScheduledExecutorService();
         trafficController = new TrafficController(
                 fakeTrafficUserInterface, fakeExecutorService,
-                systemTime, Duration.ofMinutes(4).plusSeconds(30)
+                systemTime, Duration.ofMinutes(4).plusSeconds(30), Duration.ofSeconds(30)
         );
     }
 
@@ -53,6 +53,19 @@ public class TrafficControllerTest {
         assertThat(state.getIntersection().getSouthLight().getColor(), is(TrafficLight.Color.YELLOW));
         assertThat(state.getIntersection().getEastLight().getColor(), is(TrafficLight.Color.RED));
         assertThat(state.getIntersection().getWestLight().getColor(), is(TrafficLight.Color.RED));
+    }
+
+    @Test
+    public void shouldReturnNorthSouthAsRedAndEastWestAsGreenAfter5Min0Sec() {
+        trafficController.simulate();
+        fakeExecutorService.executeScheduled(Duration.ofMinutes(5));
+
+        IntersectionState state = fakeTrafficUserInterface.getLastIntersectionState();
+        assertThat(state.getDateTime(), is(systemTime.now().plus(Duration.ofMinutes(5))));
+        assertThat(state.getIntersection().getNorthLight().getColor(), is(TrafficLight.Color.RED));
+        assertThat(state.getIntersection().getSouthLight().getColor(), is(TrafficLight.Color.RED));
+        assertThat(state.getIntersection().getEastLight().getColor(), is(TrafficLight.Color.GREEN));
+        assertThat(state.getIntersection().getWestLight().getColor(), is(TrafficLight.Color.GREEN));
     }
 
 }
