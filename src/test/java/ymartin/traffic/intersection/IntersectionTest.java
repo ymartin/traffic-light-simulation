@@ -1,8 +1,12 @@
-package ymartin.traffic;
+package ymartin.traffic.intersection;
 
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
+import ymartin.traffic.util.FakeScheduledExecutorService;
+import ymartin.traffic.util.MockIntersectionView;
+import ymartin.traffic.util.StubSystemTime;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -51,7 +55,7 @@ public class IntersectionTest {
         intersection.run();
 
         IntersectionSnapshot state = mockTrafficView.getLastIntersectionState();
-        assertThat(state.getNorthLight().getColour(), is(TrafficLight.Colour.GREEN));
+        assertThat(state.getNorthLight().getColour(), CoreMatchers.is(TrafficLight.Colour.GREEN));
         assertThat(state.getSouthLight().getColour(), is(TrafficLight.Colour.GREEN));
         assertThat(state.getEastLight().getColour(), is(TrafficLight.Colour.RED));
         assertThat(state.getWestLight().getColour(), is(TrafficLight.Colour.RED));

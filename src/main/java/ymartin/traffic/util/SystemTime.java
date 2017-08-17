@@ -1,4 +1,4 @@
-package ymartin.traffic;
+package ymartin.traffic.util;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,6 @@
-package ymartin.traffic;
+package ymartin.traffic.intersection;
+
+import ymartin.traffic.util.SystemTime;
 
 import java.time.Duration;
 import java.util.HashMap;

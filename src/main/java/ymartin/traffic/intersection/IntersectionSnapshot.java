@@ -1,10 +1,9 @@
-package ymartin.traffic;
+package ymartin.traffic.intersection;
 
 import java.time.LocalDateTime;
 
 public class IntersectionSnapshot {
-    private LocalDateTime dateTime;
-
+    private final LocalDateTime dateTime;
     private final TrafficLight northLight;
     private final TrafficLight southLight;
     private final TrafficLight eastLight;

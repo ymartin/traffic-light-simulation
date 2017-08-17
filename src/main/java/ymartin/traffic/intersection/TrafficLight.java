@@ -1,4 +1,4 @@
-package ymartin.traffic;
+package ymartin.traffic.intersection;
 
 public class TrafficLight {
     private Colour colour;
