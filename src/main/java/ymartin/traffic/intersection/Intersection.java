@@ -1,7 +1,5 @@
 package ymartin.traffic.intersection;
 
-import ymartin.traffic.util.SystemTime;
-
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +34,7 @@ public class Intersection {
     }
 
     public void run() {
-        scheduledExecutorService.schedule((Runnable) scheduledExecutorService::shutdownNow, shutdownDuration.toMillis(), TimeUnit.MILLISECONDS);
+        scheduledExecutorService.schedule(scheduledExecutorService::shutdownNow, shutdownDuration.toMillis(), TimeUnit.MILLISECONDS);
         transitionState = TransitionState.RED_YELLOW;
         updateStateAndRender();
     }

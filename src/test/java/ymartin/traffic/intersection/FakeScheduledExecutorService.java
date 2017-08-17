@@ -1,4 +1,4 @@
-package ymartin.traffic.util;
+package ymartin.traffic.intersection;
 
 import java.time.Duration;
 import java.util.*;
@@ -28,8 +28,15 @@ public class FakeScheduledExecutorService implements ScheduledExecutorService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <V> ScheduledFuture<V> schedule(Callable<V> callable, long delay, TimeUnit unit) {
-        throw new UnsupportedOperationException();
+        return (ScheduledFuture<V>) schedule(() -> {
+            try {
+                callable.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }, delay, unit);
     }
 
     @Override

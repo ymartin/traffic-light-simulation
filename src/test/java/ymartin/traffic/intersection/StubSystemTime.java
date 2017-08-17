@@ -1,6 +1,4 @@
-package ymartin.traffic.util;
-
-import ymartin.traffic.util.SystemTime;
+package ymartin.traffic.intersection;
 
 import java.time.LocalDateTime;
 

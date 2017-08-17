@@ -1,4 +1,4 @@
-package ymartin.traffic.util;
+package ymartin.traffic.intersection;
 
 import java.time.LocalDateTime;
 

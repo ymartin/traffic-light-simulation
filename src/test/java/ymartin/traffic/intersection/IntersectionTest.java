@@ -4,9 +4,6 @@ package ymartin.traffic.intersection;
 import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.Test;
-import ymartin.traffic.util.FakeScheduledExecutorService;
-import ymartin.traffic.util.MockIntersectionView;
-import ymartin.traffic.util.StubSystemTime;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

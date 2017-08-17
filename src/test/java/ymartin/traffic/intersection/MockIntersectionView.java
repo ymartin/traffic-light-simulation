@@ -1,7 +1,4 @@
-package ymartin.traffic.util;
-
-import ymartin.traffic.intersection.Intersection;
-import ymartin.traffic.intersection.IntersectionSnapshot;
+package ymartin.traffic.intersection;
 
 import java.util.ArrayList;
 import java.util.List;
