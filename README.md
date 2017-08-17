@@ -1,5 +1,7 @@
 # Traffic light simulation
 
+[![Build Status](https://travis-ci.org/ymartin/traffic-light-simulation.svg?branch=master)](https://travis-ci.org/ymartin/traffic-light-simulation)
+
 ## Requirements
 You are required to provide the code for an application that simulates a set of traffic lights at an intersection. 
 The traffic lights are designated (N, S) and (E, W) like a compass.
@@ -25,7 +27,7 @@ This project required Java 8 with gradle 3.3 used to build/test.
 - ```./gradlew test``` Run tests
 - ```./gradlew run``` Start simulation which outputs to the terminal
 
-## Output
+## Output 1
 ```
 Date        Time      North   South   East    West   
 2017-08-17  08:04:23  GREEN   GREEN   RED     RED    
@@ -40,4 +42,21 @@ Date        Time      North   South   East    West
 2017-08-17  08:28:53  YELLOW  YELLOW  RED     RED    
 2017-08-17  08:29:23  RED     RED     GREEN   GREEN  
 2017-08-17  08:33:53  RED     RED     YELLOW  YELLOW
+```
+
+## Output 2
+```
+Date        Time      North   South   East    West   
+2017-08-17  09:41:01  GREEN   GREEN   RED     RED    
+2017-08-17  09:45:31  YELLOW  YELLOW  RED     RED    
+2017-08-17  09:46:01  RED     RED     GREEN   GREEN  
+2017-08-17  09:50:31  RED     RED     YELLOW  YELLOW 
+2017-08-17  09:51:01  GREEN   GREEN   RED     RED    
+2017-08-17  09:55:31  YELLOW  YELLOW  RED     RED    
+2017-08-17  09:56:01  RED     RED     GREEN   GREEN  
+2017-08-17  10:00:31  RED     RED     YELLOW  YELLOW 
+2017-08-17  10:01:01  GREEN   GREEN   RED     RED    
+2017-08-17  10:05:31  YELLOW  YELLOW  RED     RED    
+2017-08-17  10:06:01  RED     RED     GREEN   GREEN  
+2017-08-17  10:10:31  RED     RED     YELLOW  YELLOW 
 ```
