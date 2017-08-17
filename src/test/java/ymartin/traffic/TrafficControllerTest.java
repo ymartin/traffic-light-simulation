@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
-
 public class TrafficControllerTest {
 
     private TrafficController trafficController;
@@ -25,9 +24,17 @@ public class TrafficControllerTest {
         fakeTrafficUserInterface = new MockTrafficView();
         fakeExecutorService = new FakeScheduledExecutorService();
         trafficController = new TrafficController(
-                fakeTrafficUserInterface, fakeExecutorService,
-                systemTime, Duration.ofMinutes(4).plusSeconds(30), Duration.ofSeconds(30)
+                fakeTrafficUserInterface, fakeExecutorService, systemTime,
+                Duration.ofMinutes(4).plusSeconds(30), Duration.ofSeconds(30)
         );
+    }
+
+    @Test
+    public void shouldReturnCurrentSystemTime() throws InterruptedException {
+        trafficController.simulate();
+
+        IntersectionState state = fakeTrafficUserInterface.getLastIntersectionState();
+        assertThat(state.getDateTime(), is(systemTime.now()));
     }
 
     @Test
@@ -35,11 +42,10 @@ public class TrafficControllerTest {
         trafficController.simulate();
 
         IntersectionState state = fakeTrafficUserInterface.getLastIntersectionState();
-        assertThat(state.getDateTime(), is(systemTime.now()));
-        assertThat(state.getIntersection().getNorthLight().getColor(), is(TrafficLight.Color.GREEN));
-        assertThat(state.getIntersection().getSouthLight().getColor(), is(TrafficLight.Color.GREEN));
-        assertThat(state.getIntersection().getEastLight().getColor(), is(TrafficLight.Color.RED));
-        assertThat(state.getIntersection().getWestLight().getColor(), is(TrafficLight.Color.RED));
+        assertThat(state.getIntersection().getNorthLight().getColour(), is(TrafficLight.Colour.GREEN));
+        assertThat(state.getIntersection().getSouthLight().getColour(), is(TrafficLight.Colour.GREEN));
+        assertThat(state.getIntersection().getEastLight().getColour(), is(TrafficLight.Colour.RED));
+        assertThat(state.getIntersection().getWestLight().getColour(), is(TrafficLight.Colour.RED));
     }
 
     @Test
@@ -48,24 +54,61 @@ public class TrafficControllerTest {
         fakeExecutorService.executeScheduled(Duration.ofMinutes(4).plusSeconds(30));
 
         IntersectionState state = fakeTrafficUserInterface.getLastIntersectionState();
-        assertThat(state.getDateTime(), is(systemTime.now().plus(Duration.ofMinutes(4).plusSeconds(30))));
-        assertThat(state.getIntersection().getNorthLight().getColor(), is(TrafficLight.Color.YELLOW));
-        assertThat(state.getIntersection().getSouthLight().getColor(), is(TrafficLight.Color.YELLOW));
-        assertThat(state.getIntersection().getEastLight().getColor(), is(TrafficLight.Color.RED));
-        assertThat(state.getIntersection().getWestLight().getColor(), is(TrafficLight.Color.RED));
+        assertThat(state.getIntersection().getNorthLight().getColour(), is(TrafficLight.Colour.YELLOW));
+        assertThat(state.getIntersection().getSouthLight().getColour(), is(TrafficLight.Colour.YELLOW));
+        assertThat(state.getIntersection().getEastLight().getColour(), is(TrafficLight.Colour.RED));
+        assertThat(state.getIntersection().getWestLight().getColour(), is(TrafficLight.Colour.RED));
     }
 
     @Test
     public void shouldReturnNorthSouthAsRedAndEastWestAsGreenAfter5Min0Sec() {
         trafficController.simulate();
-        fakeExecutorService.executeScheduled(Duration.ofMinutes(5));
+        fakeExecutorService.executeScheduled(Duration.ofMinutes(4).plusSeconds(30), Duration.ofSeconds(30));
 
         IntersectionState state = fakeTrafficUserInterface.getLastIntersectionState();
-        assertThat(state.getDateTime(), is(systemTime.now().plus(Duration.ofMinutes(5))));
-        assertThat(state.getIntersection().getNorthLight().getColor(), is(TrafficLight.Color.RED));
-        assertThat(state.getIntersection().getSouthLight().getColor(), is(TrafficLight.Color.RED));
-        assertThat(state.getIntersection().getEastLight().getColor(), is(TrafficLight.Color.GREEN));
-        assertThat(state.getIntersection().getWestLight().getColor(), is(TrafficLight.Color.GREEN));
+        assertThat(state.getIntersection().getNorthLight().getColour(), is(TrafficLight.Colour.RED));
+        assertThat(state.getIntersection().getSouthLight().getColour(), is(TrafficLight.Colour.RED));
+        assertThat(state.getIntersection().getEastLight().getColour(), is(TrafficLight.Colour.GREEN));
+        assertThat(state.getIntersection().getWestLight().getColour(), is(TrafficLight.Colour.GREEN));
     }
 
+    @Test
+    public void shouldReturnNorthSouthAsRedAndEastWestAsYellowAfter9Min30Sec() {
+        trafficController.simulate();
+        fakeExecutorService.executeScheduled(Duration.ofMinutes(4).plusSeconds(30), Duration.ofSeconds(30));
+        fakeExecutorService.executeScheduled(Duration.ofMinutes(4).plusSeconds(30));
+
+        IntersectionState state = fakeTrafficUserInterface.getLastIntersectionState();
+        assertThat(state.getIntersection().getNorthLight().getColour(), is(TrafficLight.Colour.RED));
+        assertThat(state.getIntersection().getSouthLight().getColour(), is(TrafficLight.Colour.RED));
+        assertThat(state.getIntersection().getEastLight().getColour(), is(TrafficLight.Colour.YELLOW));
+        assertThat(state.getIntersection().getWestLight().getColour(), is(TrafficLight.Colour.YELLOW));
+    }
+
+    @Test
+    public void shouldReturnNorthSouthAsGreenAndEastWestAsRedAfter10Min0Sec() {
+        trafficController.simulate();
+        fakeExecutorService.executeScheduled(Duration.ofMinutes(4).plusSeconds(30), Duration.ofSeconds(30));
+        fakeExecutorService.executeScheduled(Duration.ofMinutes(4).plusSeconds(30), Duration.ofSeconds(30));
+
+        IntersectionState state = fakeTrafficUserInterface.getLastIntersectionState();
+        assertThat(state.getIntersection().getNorthLight().getColour(), is(TrafficLight.Colour.GREEN));
+        assertThat(state.getIntersection().getSouthLight().getColour(), is(TrafficLight.Colour.GREEN));
+        assertThat(state.getIntersection().getEastLight().getColour(), is(TrafficLight.Colour.RED));
+        assertThat(state.getIntersection().getWestLight().getColour(), is(TrafficLight.Colour.RED));
+    }
+
+    @Test
+    public void shouldReturnNorthSouthAsYellowAndEastWestAsRedAfter14Min30Sec() {
+        trafficController.simulate();
+        fakeExecutorService.executeScheduled(Duration.ofMinutes(4).plusSeconds(30), Duration.ofSeconds(30));
+        fakeExecutorService.executeScheduled(Duration.ofMinutes(4).plusSeconds(30), Duration.ofSeconds(30));
+        fakeExecutorService.executeScheduled(Duration.ofMinutes(4).plusSeconds(30));
+
+        IntersectionState state = fakeTrafficUserInterface.getLastIntersectionState();
+        assertThat(state.getIntersection().getNorthLight().getColour(), is(TrafficLight.Colour.YELLOW));
+        assertThat(state.getIntersection().getSouthLight().getColour(), is(TrafficLight.Colour.YELLOW));
+        assertThat(state.getIntersection().getEastLight().getColour(), is(TrafficLight.Colour.RED));
+        assertThat(state.getIntersection().getWestLight().getColour(), is(TrafficLight.Colour.RED));
+    }
 }

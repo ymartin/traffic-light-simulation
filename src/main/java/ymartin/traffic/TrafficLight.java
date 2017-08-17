@@ -1,17 +1,17 @@
 package ymartin.traffic;
 
 public class TrafficLight {
-    private final Color color;
+    private Colour colour;
 
-    public TrafficLight(Color color) {
-        this.color = color;
+    public TrafficLight(Colour colour) {
+        this.colour = colour;
     }
 
-    public Color getColor() {
-        return color;
+    public Colour getColour() {
+        return colour;
     }
 
-    public enum Color {
+    public enum Colour {
         GREEN, RED, YELLOW
     }
 }

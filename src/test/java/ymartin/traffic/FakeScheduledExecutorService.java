@@ -5,25 +5,21 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class FakeScheduledExecutorService implements ScheduledExecutorService {
-    private Map<Duration, Queue<Runnable>> futureCommands = new TreeMap<>(Comparator.naturalOrder());
+    private Map<Duration, Queue<Runnable>> futureCommands = new HashMap<>();
 
-    public void executeScheduled(Duration duration) {
-        futureCommands.entrySet()
-                .stream()
-                .filter(durationQueueEntry -> durationQueueEntry.getKey().compareTo(duration) <= 0)
-                .forEach(durationQueueEntry -> {
-                    Queue<Runnable> commands = durationQueueEntry.getValue();
-                    for (Runnable command = commands.poll(); command != null; command = commands.poll()) {
-                        command.run();
-                    }
-                });
+    public void executeScheduled(Duration... durations) {
+        Arrays
+                .stream(durations)
+                .map(duration -> futureCommands.getOrDefault(duration, new LinkedList<>()).poll())
+                .filter(Objects::nonNull)
+                .forEach(Runnable::run);
     }
 
     @Override
-    public ScheduledFuture<?> schedule(Runnable command, long delay, TimeUnit unit) {
-        Duration duration = Duration.ofSeconds(unit.toSeconds(delay));
+    public ScheduledFuture<?> schedule(Runnable runnable, long delay, TimeUnit unit) {
+        Duration duration = Duration.ofMillis(unit.toMillis(delay));
         futureCommands.putIfAbsent(duration, new LinkedList<>());
-        futureCommands.get(duration).add(command);
+        futureCommands.get(duration).add(runnable);
         return null;
     }
 
@@ -104,6 +100,5 @@ public class FakeScheduledExecutorService implements ScheduledExecutorService {
 
     @Override
     public void execute(Runnable command) {
-
     }
 }
