@@ -12,14 +12,16 @@ public class TrafficController {
     private ScheduledExecutorService scheduledExecutorService;
     private TrafficView trafficView;
     private SystemTime systemTime;
+    private Duration shutdownDuration;
     private IntersectionTrafficState intersectionTrafficState;
     private Map<IntersectionTrafficState, Duration> durationMap;
 
     public TrafficController(TrafficView trafficView, ScheduledExecutorService scheduledExecutorService,
-                             SystemTime systemTime, Duration greenDuration, Duration yellowDuration) {
+                             SystemTime systemTime, Duration shutdownDuration, Duration greenDuration, Duration yellowDuration) {
         this.trafficView = trafficView;
         this.scheduledExecutorService = scheduledExecutorService;
         this.systemTime = systemTime;
+        this.shutdownDuration = shutdownDuration;
         durationMap = new HashMap<>();
         durationMap.put(IntersectionTrafficState.GREEN_RED, greenDuration);
         durationMap.put(IntersectionTrafficState.RED_GREEN, greenDuration);
@@ -28,6 +30,7 @@ public class TrafficController {
     }
 
     public void simulate() {
+        scheduledExecutorService.schedule((Runnable) scheduledExecutorService::shutdownNow, shutdownDuration.toMillis(), TimeUnit.MILLISECONDS);
         intersectionTrafficState = IntersectionTrafficState.RED_YELLOW;
         updateStateAndRender();
     }
