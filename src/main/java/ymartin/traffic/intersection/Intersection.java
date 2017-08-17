@@ -1,8 +1,6 @@
 package ymartin.traffic.intersection;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -10,30 +8,26 @@ import java.util.concurrent.TimeUnit;
 public class Intersection {
 
     private ScheduledExecutorService scheduledExecutorService;
-    private IntersectionView intersectionView;
+    private IntersectionListener intersectionListener;
     private SystemTime systemTime;
-    private Duration shutdownDuration;
     private TransitionState transitionState;
-    private Map<TransitionState, Duration> durationMap;
 
-    public interface IntersectionView {
-        void render(IntersectionSnapshot intersectionSnapshot);
+    public interface IntersectionListener {
+        void notifyChange(IntersectionSnapshot intersectionSnapshot);
     }
 
-    public Intersection(IntersectionView intersectionView, ScheduledExecutorService scheduledExecutorService,
-                        SystemTime systemTime, Duration shutdownDuration, Duration greenDuration, Duration yellowDuration) {
-        this.intersectionView = intersectionView;
+    public Intersection(IntersectionListener intersectionListener, ScheduledExecutorService scheduledExecutorService,
+                        SystemTime systemTime, Duration greenDuration, Duration yellowDuration) {
+        this.intersectionListener = intersectionListener;
         this.scheduledExecutorService = scheduledExecutorService;
         this.systemTime = systemTime;
-        this.shutdownDuration = shutdownDuration;
-        durationMap = new HashMap<>();
-        durationMap.put(TransitionState.GREEN_RED, greenDuration);
-        durationMap.put(TransitionState.RED_GREEN, greenDuration);
-        durationMap.put(TransitionState.YELLOW_RED, yellowDuration);
-        durationMap.put(TransitionState.RED_YELLOW, yellowDuration);
+        TransitionState.GREEN_RED.duration = greenDuration;
+        TransitionState.RED_GREEN.duration = greenDuration;
+        TransitionState.YELLOW_RED.duration = yellowDuration;
+        TransitionState.RED_YELLOW.duration = yellowDuration;
     }
 
-    public void run() {
+    public void run(Duration shutdownDuration) {
         scheduledExecutorService.schedule(scheduledExecutorService::shutdownNow, shutdownDuration.toMillis(), TimeUnit.MILLISECONDS);
         transitionState = TransitionState.RED_YELLOW;
         updateStateAndRender();
@@ -41,8 +35,8 @@ public class Intersection {
 
     private void updateStateAndRender() {
         this.transitionState = transitionState.nextState;
-        intersectionView.render(transitionState.createSnapshot(systemTime));
-        scheduledExecutorService.schedule(this::updateStateAndRender, durationMap.get(transitionState).toMillis(), TimeUnit.MILLISECONDS);
+        intersectionListener.notifyChange(transitionState.createSnapshot(systemTime));
+        scheduledExecutorService.schedule(this::updateStateAndRender, transitionState.duration.toMillis(), TimeUnit.MILLISECONDS);
     }
 
     private enum TransitionState {
@@ -61,6 +55,7 @@ public class Intersection {
         private final TrafficLight.Colour northSouthColour;
         private final TrafficLight.Colour eastWestColour;
         private TransitionState nextState;
+        private Duration duration;
 
         TransitionState(TrafficLight.Colour northSouthColour, TrafficLight.Colour eastWestColour) {
             this.northSouthColour = northSouthColour;

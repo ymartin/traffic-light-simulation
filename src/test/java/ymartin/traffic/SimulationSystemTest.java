@@ -17,9 +17,9 @@ public class SimulationSystemTest {
     @Test
     public void shouldReturnValidIntersectionOrder() throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        Simulation simulation = new Simulation(new PrintStream(out), Duration.ofSeconds(3), Duration.ofSeconds(1), Duration.ofMillis(30));
+        Simulation simulation = new Simulation(new PrintStream(out), Duration.ofSeconds(1), Duration.ofMillis(30));
 
-        simulation.run();
+        simulation.run(Duration.ofSeconds(3));
         Thread.sleep(Duration.ofSeconds(4).toMillis());
 
         BufferedReader reader = new BufferedReader(new StringReader(out.toString()));

@@ -3,10 +3,10 @@ package ymartin.traffic.intersection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockIntersectionView implements Intersection.IntersectionView {
+public class MockIntersectionListener implements Intersection.IntersectionListener {
     private List<IntersectionSnapshot> intersectionSnapshotList;
 
-    public MockIntersectionView() {
+    public MockIntersectionListener() {
         this.intersectionSnapshotList = new ArrayList<>();
     }
 
@@ -18,7 +18,7 @@ public class MockIntersectionView implements Intersection.IntersectionView {
     }
 
     @Override
-    public void render(IntersectionSnapshot intersectionSnapshot) {
+    public void notifyChange(IntersectionSnapshot intersectionSnapshot) {
         intersectionSnapshotList.add(intersectionSnapshot);
     }
 }
