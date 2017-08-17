@@ -13,8 +13,8 @@ public class Intersection {
     private IntersectionView intersectionView;
     private SystemTime systemTime;
     private Duration shutdownDuration;
-    private IntersectionTrafficState intersectionTrafficState;
-    private Map<IntersectionTrafficState, Duration> durationMap;
+    private TransitionState transitionState;
+    private Map<TransitionState, Duration> durationMap;
 
     public interface IntersectionView {
         void render(IntersectionSnapshot intersectionSnapshot);
@@ -27,28 +27,25 @@ public class Intersection {
         this.systemTime = systemTime;
         this.shutdownDuration = shutdownDuration;
         durationMap = new HashMap<>();
-        durationMap.put(IntersectionTrafficState.GREEN_RED, greenDuration);
-        durationMap.put(IntersectionTrafficState.RED_GREEN, greenDuration);
-        durationMap.put(IntersectionTrafficState.YELLOW_RED, yellowDuration);
-        durationMap.put(IntersectionTrafficState.RED_YELLOW, yellowDuration);
+        durationMap.put(TransitionState.GREEN_RED, greenDuration);
+        durationMap.put(TransitionState.RED_GREEN, greenDuration);
+        durationMap.put(TransitionState.YELLOW_RED, yellowDuration);
+        durationMap.put(TransitionState.RED_YELLOW, yellowDuration);
     }
 
     public void run() {
         scheduledExecutorService.schedule((Runnable) scheduledExecutorService::shutdownNow, shutdownDuration.toMillis(), TimeUnit.MILLISECONDS);
-        intersectionTrafficState = IntersectionTrafficState.RED_YELLOW;
+        transitionState = TransitionState.RED_YELLOW;
         updateStateAndRender();
     }
 
     private void updateStateAndRender() {
-        this.intersectionTrafficState = intersectionTrafficState.nextState;
-        intersectionView.render(new IntersectionSnapshot(
-                new TrafficLight(intersectionTrafficState.northSouthColour), new TrafficLight(intersectionTrafficState.northSouthColour),
-                new TrafficLight(intersectionTrafficState.eastWestColour), new TrafficLight(intersectionTrafficState.eastWestColour),
-                systemTime.now()));
-        scheduledExecutorService.schedule(this::updateStateAndRender, durationMap.get(intersectionTrafficState).toMillis(), TimeUnit.MILLISECONDS);
+        this.transitionState = transitionState.nextState;
+        intersectionView.render(transitionState.createSnapshot(systemTime));
+        scheduledExecutorService.schedule(this::updateStateAndRender, durationMap.get(transitionState).toMillis(), TimeUnit.MILLISECONDS);
     }
 
-    private enum IntersectionTrafficState {
+    private enum TransitionState {
         GREEN_RED(TrafficLight.Colour.GREEN, TrafficLight.Colour.RED),
         YELLOW_RED(TrafficLight.Colour.YELLOW, TrafficLight.Colour.RED),
         RED_GREEN(TrafficLight.Colour.RED, TrafficLight.Colour.GREEN),
@@ -63,11 +60,18 @@ public class Intersection {
 
         private final TrafficLight.Colour northSouthColour;
         private final TrafficLight.Colour eastWestColour;
-        private IntersectionTrafficState nextState;
+        private TransitionState nextState;
 
-        IntersectionTrafficState(TrafficLight.Colour northSouthColour, TrafficLight.Colour eastWestColour) {
+        TransitionState(TrafficLight.Colour northSouthColour, TrafficLight.Colour eastWestColour) {
             this.northSouthColour = northSouthColour;
             this.eastWestColour = eastWestColour;
+        }
+
+        IntersectionSnapshot createSnapshot(SystemTime systemTime) {
+            return new IntersectionSnapshot(
+                    new TrafficLight(northSouthColour), new TrafficLight(northSouthColour),
+                    new TrafficLight(eastWestColour), new TrafficLight(eastWestColour),
+                    systemTime.now());
         }
     }
 }
