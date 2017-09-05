@@ -3,11 +3,7 @@
 [![Build Status](https://travis-ci.org/ymartin/traffic-light-simulation.svg?branch=master)](https://travis-ci.org/ymartin/traffic-light-simulation)
 
 ## Requirements
-You are required to provide the code for an application that simulates a set of traffic lights at an intersection. 
-The traffic lights are designated (N, S) and (E, W) like a compass.
-
-When switching from green to red, the yellow light must be displayed for 30 seconds prior to it switching to red. 
-The lights will change automatically every 5 minutes.
+Simulate a set of traffic lights (N, S), (E, W) at an intersection. Prior to switching to the red light, yellow must be displayed for 30 seconds. Lights change every 5 minutes.
 
 ## Assumptions
 - Simulation runs in real-time and outputs at duration intervals
